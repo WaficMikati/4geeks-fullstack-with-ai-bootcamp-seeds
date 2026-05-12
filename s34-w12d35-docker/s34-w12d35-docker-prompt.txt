@@ -1,0 +1,1 @@
+Generate a course on "Docker" for beginner developers following the attached outline PDF exactly. The course has 9 conceptual lessons (📖) and 1 scenario-based assessment (🧠), plus 1 outro — 11 lessons total. Do not add, remove, or reorder lessons — implement the structure as specified in the PDF.

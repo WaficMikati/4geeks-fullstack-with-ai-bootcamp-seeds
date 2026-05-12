@@ -1,0 +1,1 @@
+Generate a course on 'Understanding Telemetry from the Frontend' for beginner developers following the attached outline PDF exactly. The course has 6 conceptual lessons (📖), 1 scenario-based assessment (🧠), and 1 outro — 8 lessons total. No code challenges. Do not add, remove, or reorder lessons — implement the structure as specified in the PDF.

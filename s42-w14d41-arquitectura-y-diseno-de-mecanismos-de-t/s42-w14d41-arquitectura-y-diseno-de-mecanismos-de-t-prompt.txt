@@ -1,0 +1,1 @@
+Generate a course on 'Telemetry Architecture' for beginner developers following the attached outline PDF exactly. The course has 8 conceptual lessons (📖), 1 scenario-based assessment (🧠), and 1 outro — 10 lessons total. No code challenges. Do not add, remove, or reorder lessons — implement the structure as specified in the PDF.

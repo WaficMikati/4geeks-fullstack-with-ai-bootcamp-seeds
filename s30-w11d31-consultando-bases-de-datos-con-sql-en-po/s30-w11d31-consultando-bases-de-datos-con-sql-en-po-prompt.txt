@@ -1,0 +1,1 @@
+Generate a course on "SQL Fundamentals" for beginner developers following the attached outline PDF exactly. The course has 10 conceptual lessons (📖), 3 code challenges (💻), 1 multiple-choice assessment (🧠), and 1 outro — 14 lessons total across 7 sections. Do not add, remove, or reorder lessons — implement the structure as specified in the PDF.

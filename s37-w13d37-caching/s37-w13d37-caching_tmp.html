@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>s37-w13d37-caching.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+<style>/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+</style>
+<style>/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+</style>
+<style>/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}</style>
+
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="course-outline:-caching">Course Outline: Caching</h1>
+<p><strong>Title:</strong> Caching: Faster Responses Without Extra Work
+<strong>Skill:</strong> Skill 37 — Optimizar la arquitectura para alto tráfico empleando Caching
+<strong>Learnpack:</strong> + Caching
+<strong>File:</strong> s37-w13d37-caching
+<strong>Prerequisite:</strong> Serializers (s36-w12d36-serializers)
+<strong>Target Audience:</strong> Beginner developers building FastAPI backends who understand serializers and know how to shape API responses
+<strong>Total Lessons:</strong> 11
+<strong>Format:</strong> Mixed (9% hands-on = 1 lesson)</p>
+<hr>
+<h2 id="course-description">Course Description</h2>
+<p>Students already know how to return the right data in the right shape. But their API still recalculates the same result on every request — even when nothing has changed. This course introduces caching: a technique for storing the result of expensive operations so they can be reused without recomputing. Students will learn when caching helps, where to put the cache, how to keep it fresh, and which of the four established strategies to apply in a given scenario.</p>
+<hr>
+<h2 id="course-philosophy">Course Philosophy</h2>
+<p>This course emphasizes:</p>
+<ul>
+<li>Understanding the problem before reaching for the solution — caching is a tradeoff, not a default</li>
+<li>Building intuition for the cost/freshness spectrum rather than memorizing rules</li>
+<li>Starting with the simplest implementation (in-memory dict) before introducing infrastructure (Redis)</li>
+</ul>
+<hr>
+<h2 id="course-statistics-summary">Course Statistics Summary</h2>
+<table>
+<thead>
+<tr>
+<th>Section</th>
+<th>Lessons</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>00 - Welcome</td>
+<td>1</td>
+</tr>
+<tr>
+<td>01 - Caching Fundamentals</td>
+<td>2</td>
+</tr>
+<tr>
+<td>02 - Cache Architecture</td>
+<td>3</td>
+</tr>
+<tr>
+<td>03 - Caching Strategies</td>
+<td>3</td>
+</tr>
+<tr>
+<td>04 - Assessment</td>
+<td>1</td>
+</tr>
+<tr>
+<td>05 - Outro</td>
+<td>1</td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td><strong>11</strong></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h3 id="00.0-welcome-%F0%9F%93%96">00.0 Welcome 📖</h3>
+<p><strong>Learning Objectives:</strong></p>
+<ul>
+<li>Understand what problem caching solves and why it matters at scale</li>
+<li>Get a preview of the four sections that build from concept to implementation</li>
+</ul>
+<p><strong>Content Outline:</strong></p>
+<ul>
+<li>The performance problem: your API is correct but slow — same query, 50ms, 200 times a second</li>
+<li>Caching as a solution: store the result once, reuse it many times</li>
+<li>What this course covers: fundamentals → architecture → invalidation → strategies → practice</li>
+</ul>
+<p><strong>Transitions:</strong>
+Section 01 starts by defining what caching actually is and how it works mechanically.</p>
+<p><strong>Key Principles:</strong></p>
+<ul>
+<li>Caching trades memory for speed</li>
+<li>The hardest part of caching is not storing — it's knowing when to stop storing</li>
+</ul>
+<p><strong>Examples:</strong></p>
+<ul>
+<li>A <code>/products</code> endpoint that queries the database on every request vs. one that caches the result for 60 seconds</li>
+<li>A user profile endpoint that hits the DB 500 times a minute for data that changes once a day</li>
+</ul>
+<hr>
+<h3 id="01.0-caching-fundamentals-%F0%9F%93%96">01.0 Caching Fundamentals 📖</h3>
+<p><strong>Learning Objectives:</strong></p>
+<ul>
+<li>Define what a cache is and how it differs from a database</li>
+<li>Explain the cache hit / miss cycle</li>
+<li>Understand what &quot;memory cache&quot; means and where it sits in the request flow</li>
+</ul>
+<p><strong>Content Outline:</strong></p>
+<ul>
+<li>What caching is: storing the result of an expensive operation so it can be reused</li>
+<li>The memory cache: a fast-access store (dict, Redis) between the requester and the expensive source</li>
+<li>The hit/miss cycle: check cache → hit: return immediately → miss: compute, store, return</li>
+<li>What counts as &quot;expensive&quot;: DB queries, external API calls, heavy computations</li>
+</ul>
+<p><strong>Transitions:</strong>
+Now that we know what caching is and how the cycle works, the next lesson asks the harder question: when is it actually worth caching?</p>
+<p><strong>Key Principles:</strong></p>
+<ul>
+<li>A cache is a copy — the original source of truth is always elsewhere</li>
+<li>Every cache hit saves a round trip to something slower</li>
+<li>Caching only helps when the same result is requested more than once</li>
+</ul>
+<p><strong>Examples:</strong></p>
+<ul>
+<li>Requesting <code>/users/42</code> 100 times in one minute: without cache → 100 DB queries; with cache → 1 DB query + 99 instant returns</li>
+<li>The hit/miss cycle visualized as: request → check dict → found? return it : query DB, save to dict, return it</li>
+</ul>
+<hr>
+<h3 id="01.1-when-to-cache-%F0%9F%93%96">01.1 When to Cache 📖</h3>
+<p><strong>Learning Objectives:</strong></p>
+<ul>
+<li>Apply the cost-of-computation vs. cost-of-storage tradeoff to decide what to cache</li>
+<li>Identify when freshness concerns outweigh the speed benefit</li>
+<li>Recognize data that must never be placed in a shared cache</li>
+</ul>
+<p><strong>Content Outline:</strong></p>
+<ul>
+<li>Cost of computation vs. cost of storage: is the operation expensive enough to justify the memory?</li>
+<li>High read frequency: if the same result is requested many times, caching pays off fast</li>
+<li>Freshness vs. speed: data that changes constantly loses its caching benefit</li>
+<li>What NOT to cache: per-user private data in a shared cache, highly volatile data, one-time queries</li>
+</ul>
+<p><strong>Transitions:</strong>
+Once we know what's worth caching, the next question is: where does the cache actually live? Section 02 maps out the options.</p>
+<p><strong>Key Principles:</strong></p>
+<ul>
+<li>Cache what is expensive to compute and cheap to store</li>
+<li>Cache what is read many times and written rarely</li>
+<li>Never cache private or authenticated data in a shared store</li>
+</ul>
+<p><strong>Examples:</strong></p>
+<ul>
+<li>Worth caching: a product catalog that changes once a day but is queried thousands of times</li>
+<li>Not worth caching: a real-time stock price that changes every second</li>
+<li><strong>Anti-pattern — Shared Cache for Private Data:</strong> Storing a user's shopping cart in a shared CDN cache. Another user's request matches the cache key and receives someone else's cart. The fix: private data belongs in per-user stores (session, Redis with user-scoped keys) — never in a shared public cache.</li>
+</ul>
+<hr>
+<h3 id="02.0-cache-architecture-%F0%9F%93%96">02.0 Cache Architecture 📖</h3>
+<p><strong>Learning Objectives:</strong></p>
+<ul>
+<li>Understand that &quot;cache&quot; is not one thing — it exists at multiple layers with different tradeoffs</li>
+<li>Distinguish between in-process, distributed, and HTTP-level caching</li>
+</ul>
+<p><strong>Content Outline:</strong></p>
+<ul>
+<li>The spectrum: in-process memory (fastest, local) → distributed cache (shared, networked) → CDN (global, HTTP-level)</li>
+<li>Each layer trades speed for reach: in-process is fastest but not shared; CDN is global but coarse</li>
+<li>The architecture question: how many instances of your app are running, and do they need a shared cache?</li>
+</ul>
+<p><strong>Transitions:</strong>
+02.1 covers each cache type in detail — what it is, when to use it, and what breaks if you choose wrong. 02.2 then covers the hardest architectural problem: keeping the cache up to date.</p>
+<p><strong>Key Principles:</strong></p>
+<ul>
+<li>The right cache layer depends on your deployment topology, not just your data</li>
+<li>In-process cache is invisible to other instances — fine for single-server, broken for load-balanced</li>
+<li>Distributed cache adds a network hop but makes the cache a shared resource</li>
+</ul>
+<p><strong>Examples:</strong></p>
+<ul>
+<li>Single server with an in-process dict cache: works perfectly, zero overhead</li>
+<li>Load balancer with two instances, each with their own in-process dict: user A gets instance 1 (fresh data), user B gets instance 2 (stale data after an update) — inconsistent</li>
+</ul>
+<hr>
+<h3 id="02.1-cache-placement-%F0%9F%93%96">02.1 Cache Placement 📖</h3>
+<p><strong>Learning Objectives:</strong></p>
+<ul>
+<li>Choose between in-memory, Redis, and CDN cache based on deployment needs</li>
+<li>Understand what is gained and lost at each layer</li>
+</ul>
+<p><strong>Content Outline:</strong></p>
+<ul>
+<li>In-memory (app): Python dict, <code>functools.lru_cache</code> — zero latency, no network, lost on restart, not shared</li>
+<li>Distributed (Redis): shared across all instances, survives restarts, adds a small network hop</li>
+<li>CDN/HTTP cache: <code>Cache-Control</code> headers, handled by infrastructure, for public responses only</li>
+</ul>
+<p><strong>Transitions:</strong>
+Now that we know where to put the cache, the next lesson tackles what happens when the data it holds becomes outdated.</p>
+<p><strong>Key Principles:</strong></p>
+<ul>
+<li>Use in-memory for single-instance development or non-critical caching</li>
+<li>Use Redis in production with multiple instances</li>
+<li>Use CDN only for public, non-authenticated responses</li>
+</ul>
+<p><strong>Examples:</strong></p>
+<ul>
+<li><code>functools.lru_cache</code> on a pure function: zero setup, immediate benefit, disappears when process restarts</li>
+<li>Redis <code>SET user:42 &lt;data&gt; EX 300</code>: shared across all API instances, survives a pod restart</li>
+<li><strong>Anti-pattern — In-Memory Cache Behind a Load Balancer:</strong> Two instances of your API each maintain their own dict cache. You update a record, invalidate the cache on instance 1 — but instance 2 still serves stale data. The fix: use Redis so all instances share the same cache state.</li>
+</ul>
+<hr>
+<h3 id="02.2-cache-invalidation-%F0%9F%93%96">02.2 Cache Invalidation 📖</h3>
+<p><strong>Learning Objectives:</strong></p>
+<ul>
+<li>Explain why cache invalidation is considered one of the hardest problems in computer science</li>
+<li>Implement TTL-based and event-based invalidation and state when to use each</li>
+</ul>
+<p><strong>Content Outline:</strong></p>
+<ul>
+<li>The core problem: the cache is a copy — when the original changes, the copy is wrong</li>
+<li>TTL (Time-To-Live): the cache entry expires after N seconds; simple, predictable, occasionally stale</li>
+<li>Event-based invalidation: when the underlying data changes, explicitly delete or update the cache key; always accurate, more complex</li>
+<li>The tradeoff: TTL is simpler but can serve stale data; event-based is precise but requires coordination</li>
+</ul>
+<p><strong>Transitions:</strong>
+Now that we have a mental model for where cache lives and how to keep it fresh, Section 03 covers the four established patterns for reading and writing to the cache.</p>
+<p><strong>Key Principles:</strong></p>
+<ul>
+<li>Every cached value has an expiry — explicit (TTL) or implicit (event)</li>
+<li>TTL is appropriate when slight staleness is acceptable</li>
+<li>Event-based is appropriate when stale data has real consequences</li>
+</ul>
+<p><strong>Examples:</strong></p>
+<ul>
+<li>TTL: <code>cache[key] = (value, time.time() + 60)</code> — expires in 60 seconds regardless of what happens to the data</li>
+<li>Event-based: when a product's price is updated via <code>PATCH /products/42</code>, the handler explicitly deletes <code>cache[&quot;product:42&quot;]</code></li>
+<li><strong>Anti-pattern — No Invalidation:</strong> Setting a cache entry with no TTL and no deletion logic. The data served by the cache drifts further from reality every day until the server restarts. The fix: every cache entry must have either a TTL or an explicit invalidation trigger.</li>
+</ul>
+<hr>
+<h3 id="03.0-caching-strategies-%F0%9F%93%96">03.0 Caching Strategies 📖</h3>
+<p><strong>Learning Objectives:</strong></p>
+<ul>
+<li>Understand why named caching strategies exist — different read/write patterns need different approaches</li>
+<li>Distinguish the four strategies by who populates the cache and when writes reach the database</li>
+</ul>
+<p><strong>Content Outline:</strong></p>
+<ul>
+<li>The question strategies answer: given a read or write request, what happens to the cache and the DB, and in what order?</li>
+<li>Cache-Aside: the application manages the cache manually on reads</li>
+<li>Write-Through: every write goes to cache and DB simultaneously</li>
+<li>Write-Behind: write to cache first, sync to DB asynchronously</li>
+<li>TTL-Based: use expiration as the sole invalidation mechanism for any of the above</li>
+</ul>
+<p><strong>Transitions:</strong>
+03.1 covers each strategy in detail — mechanics, when to use it, and what can go wrong. 03.2 then implements Cache-Aside in Python.</p>
+<p><strong>Key Principles:</strong></p>
+<ul>
+<li>There is no universally best strategy — the right choice depends on read/write ratio and consistency requirements</li>
+<li>Cache-Aside is the most common starting point for read-heavy APIs</li>
+<li>Write-Behind should never be used when data loss is unacceptable</li>
+</ul>
+<p><strong>Examples:</strong></p>
+<ul>
+<li>A product catalog (read-heavy, rarely updated) → Cache-Aside is natural</li>
+<li>A financial ledger (every write must be durable) → Write-Behind is dangerous here</li>
+<li>A public leaderboard (acceptable to be 30 seconds stale) → TTL-Based is simple and sufficient</li>
+</ul>
+<hr>
+<h3 id="03.1-the-four-strategies-%F0%9F%93%96">03.1 The Four Strategies 📖</h3>
+<p><strong>Learning Objectives:</strong></p>
+<ul>
+<li>Describe the mechanics of Cache-Aside, Write-Through, Write-Behind, and TTL-Based caching</li>
+<li>Select the appropriate strategy given a scenario's consistency and performance requirements</li>
+</ul>
+<p><strong>Content Outline:</strong></p>
+<ul>
+<li><strong>Cache-Aside (Lazy Loading):</strong>
+<ul>
+<li>Read: check cache → miss → load from DB → store in cache → return</li>
+<li>Write: write to DB only; cache is invalidated or left to expire</li>
+<li>Best for: read-heavy workloads, data that isn't always needed</li>
+</ul>
+</li>
+<li><strong>Write-Through:</strong>
+<ul>
+<li>Every write goes to cache AND DB in the same operation</li>
+<li>Cache is always consistent with the DB</li>
+<li>Best for: data that is read immediately after being written</li>
+<li>Cost: every write touches both stores — slightly slower writes</li>
+</ul>
+</li>
+<li><strong>Write-Behind (Write-Back):</strong>
+<ul>
+<li>Write to cache first; a background process syncs to DB asynchronously</li>
+<li>Very fast writes; risk: if the process crashes before syncing, data is lost</li>
+<li>Best for: high-throughput write scenarios where eventual consistency is acceptable</li>
+</ul>
+</li>
+<li><strong>TTL-Based:</strong>
+<ul>
+<li>No explicit invalidation; cache entries simply expire after N seconds</li>
+<li>Can be combined with any of the above</li>
+<li>Best for: data with a known acceptable staleness window</li>
+</ul>
+</li>
+</ul>
+<p><strong>Transitions:</strong>
+Now that all four strategies are understood, 03.2 implements Cache-Aside — the most common pattern — in Python.</p>
+<p><strong>Key Principles:</strong></p>
+<ul>
+<li>Cache-Aside keeps the app in control — it decides when to populate and when to invalidate</li>
+<li>Write-Through keeps cache and DB always in sync at the cost of write speed</li>
+<li>Write-Behind maximizes write speed but introduces data loss risk</li>
+<li>TTL-Based is the simplest invalidation mechanism and pairs well with any strategy</li>
+</ul>
+<p><strong>Examples:</strong></p>
+<ul>
+<li><strong>Anti-pattern — Write-Behind for Financial Data:</strong> A payment service writes to cache first and syncs to DB asynchronously. The server crashes before the sync. The payment is lost with no record. The fix: for data where loss is unacceptable, use Write-Through or skip caching writes entirely.</li>
+<li>Cache-Aside illustrated: <code>get_user(42)</code> → check <code>cache[&quot;user:42&quot;]</code> → not found → query DB → <code>cache[&quot;user:42&quot;] = (result, now + 300)</code> → return result</li>
+</ul>
+<hr>
+<h3 id="03.2-cache-aside-in-practice-%F0%9F%92%BB">03.2 Cache-Aside in Practice 💻</h3>
+<p><strong>Challenge Prompt:</strong>
+Implement a <code>get_user</code> function that uses Cache-Aside with a 5-second TTL: on a cache hit print <code>CACHE HIT</code> and return the cached value; on a cache miss print <code>CACHE MISS</code>, simulate a DB call, store the result, and return it.</p>
+<p><strong>Solution Code:</strong></p>
+<pre class="hljs"><code><div><span class="hljs-keyword">import</span> time
+
+cache = {}
+
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">get_user</span><span class="hljs-params">(user_id: int)</span> -&gt; dict:</span>
+    now = time.time()
+    <span class="hljs-keyword">if</span> user_id <span class="hljs-keyword">in</span> cache:
+        value, expires_at = cache[user_id]
+        <span class="hljs-keyword">if</span> now &lt; expires_at:
+            print(<span class="hljs-string">"CACHE HIT"</span>)
+            <span class="hljs-keyword">return</span> value
+    print(<span class="hljs-string">"CACHE MISS"</span>)
+    result = {<span class="hljs-string">"id"</span>: user_id, <span class="hljs-string">"name"</span>: <span class="hljs-string">f"User <span class="hljs-subst">{user_id}</span>"</span>}
+    cache[user_id] = (result, now + <span class="hljs-number">5</span>)
+    <span class="hljs-keyword">return</span> result
+
+print(get_user(<span class="hljs-number">1</span>))
+print(get_user(<span class="hljs-number">1</span>))
+print(get_user(<span class="hljs-number">2</span>))
+</div></code></pre>
+<p><strong>Challenge Code:</strong></p>
+<pre class="hljs"><code><div><span class="hljs-keyword">import</span> time
+
+cache = {}
+
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">get_user</span><span class="hljs-params">(user_id: int)</span> -&gt; dict:</span>
+    now = time.time()
+    <span class="hljs-comment"># If the key exists in cache and the TTL hasn't expired, return it</span>
+    <span class="hljs-comment"># your code here</span>
+
+    <span class="hljs-comment"># Cache miss: simulate a DB call</span>
+    print(<span class="hljs-string">"CACHE MISS"</span>)
+    result = {<span class="hljs-string">"id"</span>: user_id, <span class="hljs-string">"name"</span>: <span class="hljs-string">f"User <span class="hljs-subst">{user_id}</span>"</span>}
+    <span class="hljs-comment"># Store result in cache with a 5-second TTL</span>
+    <span class="hljs-comment"># your code here</span>
+    <span class="hljs-keyword">return</span> result
+
+print(get_user(<span class="hljs-number">1</span>))
+print(get_user(<span class="hljs-number">1</span>))
+print(get_user(<span class="hljs-number">2</span>))
+</div></code></pre>
+<hr>
+<h3 id="04.0-caching-knowledge-check-%F0%9F%A7%A0">04.0 Caching Knowledge Check 🧠</h3>
+<p><strong>Learning Objectives:</strong></p>
+<ul>
+<li>Demonstrate understanding of caching fundamentals, architecture, invalidation, and strategy selection</li>
+</ul>
+<p><strong>Question Format:</strong> Multiple choice</p>
+<p><strong>Questions:</strong></p>
+<ol>
+<li>
+<p>What is a cache hit?</p>
+<ul>
+<li>a) The cache key was not found and the DB was queried</li>
+<li>b) The requested value was found in the cache and returned without touching the DB ✓</li>
+<li>c) The cache was cleared due to a TTL expiry</li>
+<li>d) A write operation updated both the cache and the DB</li>
+</ul>
+</li>
+<li>
+<p>Your API serves a product catalog that is updated once a day but queried 10,000 times per hour. Should you cache it?</p>
+<ul>
+<li>a) No — the data changes, so caching will always serve stale results</li>
+<li>b) No — caching is only for static data</li>
+<li>c) Yes — high read frequency with low write frequency is the ideal caching candidate ✓</li>
+<li>d) Yes — but only if the response is under 1KB</li>
+</ul>
+</li>
+<li>
+<p>You deploy your FastAPI app behind a load balancer with three instances. Which cache type will cause inconsistency between instances?</p>
+<ul>
+<li>a) Redis</li>
+<li>b) A CDN</li>
+<li>c) An in-process Python dict ✓</li>
+<li>d) A database query cache</li>
+</ul>
+</li>
+<li>
+<p>What is the main risk of event-based cache invalidation compared to TTL?</p>
+<ul>
+<li>a) It always serves stale data</li>
+<li>b) It requires more implementation effort and coordination ✓</li>
+<li>c) It uses more memory than TTL</li>
+<li>d) It cannot be used with Redis</li>
+</ul>
+</li>
+<li>
+<p>Which caching strategy writes to both the cache and the database in the same operation?</p>
+<ul>
+<li>a) Cache-Aside</li>
+<li>b) Write-Behind</li>
+<li>c) TTL-Based</li>
+<li>d) Write-Through ✓</li>
+</ul>
+</li>
+<li>
+<p>A developer stores a user's authentication token in a shared CDN cache keyed only by the endpoint path. What is the risk?</p>
+<ul>
+<li>a) The token will expire too quickly</li>
+<li>b) Other users requesting the same endpoint may receive another user's token ✓</li>
+<li>c) The cache will run out of memory</li>
+<li>d) The CDN will reject the token format</li>
+</ul>
+</li>
+<li>
+<p>You are building a high-throughput event logging service. Writes happen thousands of times per second, and losing a small number of events is acceptable. Which strategy fits best?</p>
+<ul>
+<li>a) Write-Through — always consistent</li>
+<li>b) Cache-Aside — reads only, writes go straight to DB</li>
+<li>c) Write-Behind — fast writes with async DB sync ✓</li>
+<li>d) TTL-Based — expiry handles everything</li>
+</ul>
+</li>
+<li>
+<p>In Cache-Aside, who is responsible for populating the cache?</p>
+<ul>
+<li>a) The database driver</li>
+<li>b) A background sync process</li>
+<li>c) The application code, on cache miss ✓</li>
+<li>d) The CDN on every request</li>
+</ul>
+</li>
+</ol>
+<p><strong>Evaluation Criteria:</strong></p>
+<ul>
+<li>7–8 correct: solid understanding of caching concepts and strategy selection</li>
+<li>5–6 correct: good foundation; review cache architecture and strategy tradeoffs</li>
+<li>Below 5: revisit sections 02 and 03 before applying caching in production code</li>
+</ul>
+<p><strong>Score Interpretation:</strong>
+Each question maps to a core concept: Q1 (fundamentals), Q2 (when to cache), Q3 (placement), Q4 (invalidation), Q5–Q7 (strategies), Q8 (Cache-Aside mechanics).</p>
+<hr>
+<h3 id="05.0-outro">05.0 Outro</h3>
+<p><strong>Content Outline:</strong></p>
+<ul>
+<li>Course recap: what students accomplished
+<ul>
+<li>Understood what caching is and how the hit/miss cycle works</li>
+<li>Learned to evaluate whether caching is worth it for a given data access pattern</li>
+<li>Mapped the three cache placement options (in-memory, Redis, CDN) to real deployment scenarios</li>
+<li>Understood TTL and event-based invalidation and their tradeoffs</li>
+<li>Learned the four caching strategies and when to apply each</li>
+<li>Implemented Cache-Aside with TTL in Python</li>
+</ul>
+</li>
+<li>Connection to bigger picture: caching is one layer in the performance stack — working alongside serializers (what you send) and payload shaping (how much you send) to make APIs fast under load</li>
+<li>Next steps: explore Redis in depth, learn about cache stampede and how to prevent it, look into HTTP caching headers (<code>Cache-Control</code>, <code>ETag</code>), and distributed cache patterns for microservices</li>
+<li>Resources: Redis documentation, Martin Fowler's caching patterns, Python <code>functools.lru_cache</code> docs</li>
+<li>Encouragement: caching feels complex at first because of invalidation — but Cache-Aside with a reasonable TTL solves 80% of real-world cases. Start simple, measure, then add complexity only when needed.</li>
+</ul>
+<p><strong>Note:</strong> This is conclusion only — no theory, exercises, or assessment.</p>
+<hr>
+
+</body>
+</html>

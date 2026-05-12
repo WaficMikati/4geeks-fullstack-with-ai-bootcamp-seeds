@@ -1,0 +1,1 @@
+Generate a course on "Managing Related Tables with SQL" for beginner developers following the attached outline PDF exactly. The course has 10 conceptual lessons (📖), 1 hands-on code challenge (💻), and 1 scenario-based assessment (🧠), plus a welcome and an outro, for 12 lessons total. Do not add, remove, or reorder lessons — implement the structure as specified in the PDF.

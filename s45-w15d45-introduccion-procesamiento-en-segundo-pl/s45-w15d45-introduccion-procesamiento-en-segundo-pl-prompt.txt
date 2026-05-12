@@ -1,0 +1,1 @@
+Generate a course on "Background Processing: Running Work Outside the Request Cycle" for beginner developers, following the attached outline PDF exactly. The course has 8 conceptual lessons (📖) and 1 scenario-based assessment (🧠), for a total of 9 lessons. No code challenges. Do not add, remove, or reorder lessons — implement the structure as specified in the PDF.

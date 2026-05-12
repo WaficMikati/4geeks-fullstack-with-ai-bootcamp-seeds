@@ -1,0 +1,1 @@
+Generate a course on "Frontend Optimization Strategies" for beginner React developers following the attached outline PDF exactly. The course has 11 conceptual lessons (📖), 3 hands-on code challenges (💻), 1 scenario-based assessment (🧠), and 1 outro — 15 lessons total. Do not add, remove, or reorder lessons — implement the structure as specified in the PDF.

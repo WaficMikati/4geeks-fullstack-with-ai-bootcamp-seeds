@@ -1,0 +1,1 @@
+Generate a course on "RabbitMQ: A Production Message Broker" for beginner developers, following the attached outline PDF exactly. The course has 7 conceptual lessons (📖), 1 hands-on coding challenge (💻), and 1 scenario-based assessment (🧠), for a total of 9 lessons. Do not add, remove, or reorder lessons — implement the structure as specified in the PDF.

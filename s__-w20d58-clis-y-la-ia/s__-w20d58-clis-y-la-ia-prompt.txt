@@ -1,0 +1,1 @@
+Generate a course on "CLIs for AI — Building Tools Your Agent Can Call" for beginner developers following the attached outline PDF exactly. The course has 6 conceptual lessons (📖), 1 hands-on challenge (💻), and 1 assessment (🧠), plus a welcome and an outro — 8 lessons total. Do not add, remove, or reorder lessons — implement the structure as specified in the PDF.

@@ -1,0 +1,1 @@
+Generate a course on "Measuring Frontend Performance: Core Web Vitals" for beginner developers following the attached outline PDF exactly. The course has 5 conceptual lessons (📖), 1 scenario-based assessment (🧠), and 1 outro lesson, for a total of 7 lessons. Do not add, remove, or reorder lessons — implement the structure as specified in the PDF.

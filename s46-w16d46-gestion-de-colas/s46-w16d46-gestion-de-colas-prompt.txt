@@ -1,0 +1,1 @@
+Generate a course on "Queue Management: The Waiting Room Pattern" for beginner developers, following the attached outline PDF exactly. The course has 5 conceptual lessons (📖) and 1 scenario-based assessment (🧠), for a total of 7 lessons including the outro. No code challenges. Do not add, remove, or reorder lessons — implement the structure as specified in the PDF.

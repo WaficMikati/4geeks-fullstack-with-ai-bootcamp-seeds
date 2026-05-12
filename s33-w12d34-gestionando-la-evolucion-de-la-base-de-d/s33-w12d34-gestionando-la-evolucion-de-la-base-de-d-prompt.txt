@@ -1,0 +1,1 @@
+Generate a course on "Managing Database Evolution with FastAPI" for beginner developers following the attached outline PDF exactly. The course has 6 conceptual lessons (📖), 1 hands-on coding challenge (💻), and 1 scenario-based assessment (🧠), plus 1 outro — 9 lessons total. Do not add, remove, or reorder lessons — implement the structure as specified in the PDF.

@@ -1,0 +1,1 @@
+Generate a course on "Telemetry Best Practices (Guardrails)" for beginner developers following the attached outline PDF exactly. The course has 6 conceptual lessons (📖), 1 hands-on challenge (💻), 1 scenario-based assessment (🧠), and 1 outro — 9 lessons total. Do not add, remove, or reorder lessons — implement the structure as specified in the PDF.

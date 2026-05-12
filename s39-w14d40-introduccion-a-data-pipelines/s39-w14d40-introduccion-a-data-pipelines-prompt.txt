@@ -1,0 +1,1 @@
+Generate a course on "Introduction to Data Pipelines" for beginner developers following the attached outline PDF exactly. The course has 9 conceptual lessons (📖), 1 code challenge (💻), 1 scenario-based assessment (🧠), and 1 outro — 11 lessons total. Do not add, remove, or reorder lessons — implement the structure as specified in the PDF.
